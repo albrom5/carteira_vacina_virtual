@@ -1,0 +1,15 @@
+{% extends 'loginbase.html' %}
+{% load crispy_forms_tags %}
+
+{% block main %}
+    <div class="container-sm p-2">
+        <div class="card align-items-sm-center">
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+
+                <input type="submit" value="Cadastrar">
+            </form>
+        </div>
+    </div>
+{% endblock %}
