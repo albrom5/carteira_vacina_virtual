@@ -1,0 +1,29 @@
+{% extends 'loginbase.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+    Dados adicionais de {{ object }}
+{% endblock %}
+
+{% block main %}
+<div class="container-sm p-2">
+        <div class="card align-items-sm-center">
+            <div class="row g-2 p-2">
+                {{ object.nome_completo }}
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                </form>
+            </div>
+            <div class="row g-2 p-2">
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-success">Confirmar</button>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'custom_login' %}" class="btn btn-danger">Cancelar</a>
+                </div>
+            </div>
+        </div>
+</div>
+
+{% endblock %}
