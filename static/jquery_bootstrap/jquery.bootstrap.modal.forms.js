@@ -16,14 +16,12 @@ https://github.com/trco/django-bootstrap-modal-forms
         });
     };
 
-   var addEventHandlers = function (settings) {
-        // submitBtn click handler
-        $(settings.submitBtn).on("click", function (event) {
-            if (settings.checkValidBeforeSubmit) {
+    var addEventHandlers = function (settings) {
+        $(settings.modalForm).on("submit", function (event) {
+            if (event.originalEvent !== undefined && settings.isDeleteForm === false) {
+                event.preventDefault();
                 isFormValid(settings, submitForm);
-            }
-            else {
-                submitForm(settings);
+                return false;
             }
         });
         // Modal close handler
@@ -155,7 +153,6 @@ https://github.com/trco/django-bootstrap-modal-forms
             modalForm: ".modal-content form",
             formURL: null,
             isDeleteForm: false,
-            checkValidBeforeSubmit: true,
             errorClass: ".invalid",
             asyncUpdate: false,
             asyncSettings: {
