@@ -1,0 +1,18 @@
+<form method="post" action="">
+  {% csrf_token %}
+
+  <div class="modal-header">
+    <h3 class="modal-title">Apaga Endereço</h3>
+  </div>
+
+  <div class="modal-body">
+    <p class="delete-text">Tem certeza que deseja apagar o endereço
+      <strong>{{ endereco.endereco_completo }}</strong>?</p>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancelar</button>
+    <button type="submit" id="delete-btn" class="btn btn-danger">Delete</button>
+  </div>
+
+</form>

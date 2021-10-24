@@ -1,9 +1,10 @@
+{% load static %}
 <!-- Modal -->
         <form method="post" action="">
           {% csrf_token %}
 
          <div class="modal-header">
-            <h5 class="modal-title">Novo Telefone</h5>
+            <h5 class="modal-title">Novo Endereço</h5>
 
           </div>
 
@@ -25,4 +26,6 @@
           </div>
 
         </form>
-        <script>$('.telmask').mask(TelMaskBehavior, spOptions);</script>
+
+<script>$('.cepmask').mask('00000-000');</script>
+<script src="{% static 'customjs/consultacep.js' %}"></script>

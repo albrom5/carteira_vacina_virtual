@@ -14,7 +14,7 @@
             </button>
             <div class="collapse" id="account-collapse">
               <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                <li><a href="" class="link-dark rounded">Trocar senha</a></li>
+                <li><a href="{% url 'complementa_usuario' user.id %}" class="link-dark rounded">Alterar dados</a></li>
                 <li><a href="{% url 'logout' %}" class="link-dark rounded">Logout</a></li>
               </ul>
             </div>

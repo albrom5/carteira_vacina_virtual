@@ -1,0 +1,24 @@
+<strong>Endereços cadastrados</strong>
+<table id="enderecos-table" class="table">
+  <thead>
+  <tr>
+    <th class="text-center" scope="col">Endereço</th>
+    <th class="text-center" scope="col">Principal?</th>
+    <th class="text-center" scope="col">Excluir</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for endereco in enderecos %}
+    <tr>
+      <td class="text-center">{{ endereco.endereco_completo }}</td>
+      <td class="text-center">{% if endereco.principal %}<i class="material-icons">check_circle_outline</i>{% else %}<span class="material-icons">highlight_off</span>{% endif %}</td>
+      <td class="text-center">
+        <a type="button" class="delete-endereco" data-form-url="{% url 'apaga_endereco' endereco.id %}">
+          <i class="material-icons">delete</i>
+        </a>
+      </td>
+    </tr>
+  {% endfor %}
+
+  </tbody>
+</table>

@@ -137,6 +137,49 @@ class CustomLoginForm(AuthenticationForm):
 
 
 class TelefoneForm(BSModalModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(TelefoneForm, self).__init__(*args, **kwargs)
+        self.fields['numero'].widget.attrs.update(
+            {'class': 'form-control telmask'}
+        )
+        self.fields['principal'].widget.attrs.update(
+            {'class': 'form-check-input'}
+        )
+
     class Meta:
         model = Telefone
         fields = ['numero', 'principal']
+
+
+class EnderecoForm(BSModalModelForm):
+    refund_dict = {value: key for key, value in STATE_CHOICES}
+    siglas = [('', '----')]
+    for key, value in refund_dict.items():
+        siglas.append((value, value))
+    estado = forms.ChoiceField(choices=siglas,
+                               label='Estado', required=False)
+    def __init__(self, *args, **kwargs):
+        super(EnderecoForm, self).__init__(*args, **kwargs)
+        self.fields['principal'].widget.attrs.update(
+            {'class': 'form-check-input'}
+        )
+        self.fields['cep'].widget.attrs.update(
+            {'class': 'cep cepmask form-control'})
+        self.fields['logradouro'].widget.attrs.update(
+            {'class': 'rua form-control'})
+        self.fields['bairro'].widget.attrs.update(
+            {'class': 'bairro form-control'})
+        self.fields['ender_num'].widget.attrs.update(
+            {'class': 'form-control'})
+        self.fields['ender_compl'].widget.attrs.update(
+            {'class': 'form-control'})
+        self.fields['cidade'].widget.attrs.update(
+            {'class': 'cidade form-control'})
+        self.fields['estado'].widget.attrs.update(
+            {'class': 'uf form-select'})
+
+    class Meta:
+        model = Endereco
+        fields = ['cep', 'logradouro', 'ender_num', 'ender_compl',
+                  'bairro', 'cidade', 'estado', 'principal']

@@ -35,6 +35,7 @@ class Usuario(BaseModel):
 class Endereco(BaseModel):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE,
                                 related_name='enderecos')
+    descricao = models.CharField(max_length=30)
     logradouro = models.CharField(verbose_name='Endereço',
                                   max_length=300, null=True, blank=True)
     ender_num = models.CharField(verbose_name='Número',
@@ -49,8 +50,34 @@ class Endereco(BaseModel):
                            null=True, blank=True)
     principal = models.BooleanField(default=True)
 
+    def save(self, *args, **kwargs):
+        if self.principal:
+            Endereco.objects.filter(usuario=self.usuario).update(
+                principal=False
+            )
+        super(Endereco, self).save(*args, **kwargs)
+
+    def delete(self, using=None, keep_parents=False, *args, **kwargs):
+        if self.principal:
+            endereco = Endereco.objects.filter(
+                usuario=self.usuario
+            ).exclude(id=self.id).order_by('id').first()
+            if endereco:
+                endereco.principal = True
+                endereco.save()
+        super(Endereco, self).delete(*args, **kwargs)
+
+    @property
+    def endereco_completo(self):
+        if self.ender_compl:
+            return f'{self.logradouro}, {self.ender_num} {self.ender_compl}' \
+                   f' - {self.bairro} - {self.cidade}/{self.estado}'
+        else:
+            return f'{self.logradouro}, {self.ender_num}' \
+                   f' - {self.bairro} - {self.cidade}/{self.estado}'
+
     def __str__(self):
-        return self.logradouro
+        return self.endereco_completo
 
 
 class Telefone(BaseModel):
@@ -58,6 +85,23 @@ class Telefone(BaseModel):
                                 related_name='telefones')
     numero = models.CharField(max_length=17)
     principal = models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+        if self.principal:
+            Telefone.objects.filter(usuario=self.usuario).update(
+                principal=False
+            )
+        super(Telefone, self).save(*args, **kwargs)
+
+    def delete(self, using=None, keep_parents=False, *args, **kwargs):
+        if self.principal:
+            telefone = Telefone.objects.filter(
+                usuario=self.usuario
+            ).exclude(id=self.id).order_by('id').first()
+            if telefone:
+                telefone.principal = True
+                telefone.save()
+        super(Telefone, self).delete(*args, **kwargs)
 
     def __str__(self):
         return self.numero

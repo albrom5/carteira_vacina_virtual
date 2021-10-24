@@ -9,7 +9,21 @@
 <div class="container-sm p-2">
         <div class="card align-items-sm-center">
             <div class="row g-2 p-2">
-                {{ object.nome_completo }}
+                <h3>Dados pessoais do usuário</h3>
+            </div>
+            <div class="row g-2 p-2">
+                <div class="col-md">
+                <strong>Nome:</strong> {{ object.nome_completo }}
+                </div>
+                <div class="col-md">
+                <strong>Email:</strong> {{ object.usuario.email }}
+                </div>
+                <div class="col-md">
+                <strong>Data de nascimento:</strong> {{ object.data_nasc|date:"SHORT_DATE_FORMAT" }}
+                </div>
+                <div class="col-md">
+                <strong>CPF:</strong> {{ object.cpf }}
+                </div>
             </div>
             <form method="post" id="userForm" data-cidades-url="{% url 'ajax_carrega_cidades' %}">
             {% csrf_token %}
@@ -44,15 +58,28 @@
                 </div>
             </div>
                 </form>
-
-         <div class="modal fade" tabindex="-1" role="dialog" id="modal">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content"></div>
-          </div>
+        <div class="row">
+            <div class="col-md">
+                {% include "base/_telefones_table.html" %}
+                <button id="create-telefone-async" class="btn btn-primary" type="button" name="button">Cadastra Telefone</button>
+            </div>
+            <div class="col-md">
+                {% include "base/_enderecos_table.html" %}
+                <button id="create-endereco-async" class="btn btn-primary" type="button" name="button">Cadastra Endereço</button>
+            </div>
         </div>
-            <!-- Button trigger modal -->
-        <button id="telefoneModal" class="btn btn-primary" type="button" name="button">Cadastra Telefone</button>
+        <div class="row g-2 p-2">
+                <div class="col-md">
+                    <div class="modal fade" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" id="modal">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content"></div>
+                      </div>
+                    </div>
 
+                </div>
+
+
+        </div>
 
     </div>
 </div>
@@ -60,7 +87,10 @@
 {% endblock %}
 
 {% block script %}
- <script src="{% static 'jquery_bootstrap/jquery.bootstrap.modal.forms.min.js' %}"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+ <script src="{% static 'customjs/fieldmasks.js' %}"></script>
+ <script src="{% static 'customjs/consultacep.js' %}"></script>
+ <script src="{% static 'jquery_bootstrap/jquery.bootstrap.modal.forms.js' %}"></script>
  <script>
     $("#id_estado_natural").change(function () {
       var url = $("#userForm").attr("data-cidades-url");
@@ -78,13 +108,63 @@
 
     });
   </script>
-  <script type="text/javascript">
-    $(document).ready(function() {
-        var url = "{% url 'cadastra_telefone' object.usuario.id %}";
-        $("#telefoneModal").modalForm({
-            formURL: url
-        });
+    <script type="text/javascript">
+     $(function () {
 
-    });
-    </script>
+        function createTelefoneAsyncModalForm() {
+            $("#create-telefone-async").modalForm({
+                formURL: "{% url 'cadastra_telefone' object.usuario.id %}",
+                modalID: "#modal",
+                asyncUpdate: true,
+                asyncSettings: {
+                  closeOnSubmit: true,
+                  successMessage: " ",
+                  dataUrl: "{% url 'lista_telefones' object.usuario.id %}",
+                  dataElementId: "#telefones-table",
+                  dataKey: "table",
+                  addModalFormFunction: reinstantiateModalForms
+                }
+            });
+          }
+          createTelefoneAsyncModalForm();
+
+        function deleteTelefoneModalForm() {
+            $(".delete-telefone").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+            });
+          }
+          deleteTelefoneModalForm();
+
+        function createEnderecoAsyncModalForm() {
+            $("#create-endereco-async").modalForm({
+                formURL: "{% url 'cadastra_endereco' object.usuario.id %}",
+                modalID: "#modal",
+                asyncUpdate: true,
+                asyncSettings: {
+                  closeOnSubmit: true,
+                  successMessage: " ",
+                  dataUrl: "{% url 'lista_enderecos' object.usuario.id %}",
+                  dataElementId: "#enderecos-table",
+                  dataKey: "table",
+                  addModalFormFunction: reinstantiateModalForms
+                }
+            });
+          }
+          createEnderecoAsyncModalForm();
+
+        function deleteEnderecoModalForm() {
+            $(".delete-endereco").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+            });
+          }
+          deleteEnderecoModalForm();
+
+        function reinstantiateModalForms() {
+            createTelefoneAsyncModalForm();
+            deleteTelefoneModalForm();
+            createEnderecoAsyncModalForm();
+            deleteEnderecoModalForm();
+          }
+     })
+</script>
 {% endblock %}
