@@ -7,8 +7,11 @@ from django.contrib.auth.forms import (
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+from localflavor.br.br_states import STATE_CHOICES
 
-from .models import Usuario
+from bootstrap_modal_forms.forms import BSModalModelForm
+
+from .models import Usuario, Cidade, Telefone, Endereco
 
 
 class NovoUsuarioForm(forms.ModelForm):
@@ -82,11 +85,46 @@ class NovoUsuarioForm(forms.ModelForm):
 
 
 class DadosComplementaresUsuarioForm(forms.ModelForm):
+    refund_dict = {value: key for key, value in STATE_CHOICES}
+    siglas = [('', '----')]
+    for key, value in refund_dict.items():
+        siglas.append((value, value))
+    estado_natural = forms.ChoiceField(choices=siglas,
+                                       label='Naturalidade', required=False)
+    est_emis_rg = forms.ChoiceField(choices=siglas,
+                                       label='Estado emissor do RG', required=False)
+    def __init__(self, *args, **kwargs):
+        super(DadosComplementaresUsuarioForm, self).__init__(*args, **kwargs)
+        self.fields['naturalidade_cidade'].queryset = Cidade.objects.none()
+        self.fields['naturalidade_cidade'].widget.attrs.update(
+            {'class': 'form-select'}
+        )
+        self.fields['estado_natural'].widget.attrs.update(
+            {'class': 'form-select'}
+        )
+        self.fields['est_emis_rg'].widget.attrs.update(
+            {'class': 'form-select'}
+        )
+
+        if 'estado_natural' in self.data:
+            try:
+                estado = self.data.get('estado_natural')
+                self.fields[
+                    'naturalidade_cidade'].queryset = Cidade.objects.filter(
+                    state=estado).order_by('name')
+            except (ValueError, TypeError):
+                pass
+        elif self.instance.pk:
+            estado = self.instance.naturalidade_cidade.state
+            self.fields['estado_natural'].initial = estado
+            self.fields[
+                'naturalidade_cidade'].queryset = Cidade.objects.filter(
+                    state=estado).order_by('name')
 
     class Meta:
         model = Usuario
         fields = ['rg', 'org_emis_rg', 'est_emis_rg', 'nacionalidade',
-                  'naturalidade_cidade', 'naturalidade_estado']
+                  'naturalidade_cidade']
 
 
 class CustomLoginForm(AuthenticationForm):
@@ -96,3 +134,9 @@ class CustomLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(CustomLoginForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({'class': 'cpfmask'})
+
+
+class TelefoneForm(BSModalModelForm):
+    class Meta:
+        model = Telefone
+        fields = ['numero', 'principal']

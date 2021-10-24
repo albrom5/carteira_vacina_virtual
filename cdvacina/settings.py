@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'localflavor',
     'django_countries',
+    'bootstrap_modal_forms',
     # Padrão do Django
     'django.contrib.admin',
     'django.contrib.auth',

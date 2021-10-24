@@ -1,11 +1,16 @@
 from django.shortcuts import render, redirect
 
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 
-from .models import Usuario
+from bootstrap_modal_forms.generic import BSModalCreateView
+from django.urls import reverse_lazy
+
+from .models import Usuario, Cidade, Telefone
 from .forms import (
-    NovoUsuarioForm, CustomLoginForm, DadosComplementaresUsuarioForm
+    NovoUsuarioForm, CustomLoginForm, DadosComplementaresUsuarioForm,
+    TelefoneForm
 )
 
 def home(request):
@@ -36,6 +41,10 @@ def cadastra_usuario(request):
             )
             form.save()
             id_usuario = User.objects.get(username=cpf)
+            new_user = authenticate(username=form.cleaned_data['cpf'],
+                                    password=form.cleaned_data['password2'],
+                                    )
+            login(request, new_user)
             return redirect('complementa_usuario', id_usuario.id)
     else:
         form = NovoUsuarioForm()
@@ -48,17 +57,47 @@ def dados_complementares_usuario(request, pk):
     template = 'base/complementa_usuario.html'
     usuario = Usuario.objects.get(usuario_id=pk)
     context['object'] = usuario
-    if request.method == 'POST':
-        form = DadosComplementaresUsuarioForm(request.POST, instance=usuario)
-        if form.is_valid():
+    if request.user.is_authenticated and request.user.id == pk:
+        if request.method == 'POST':
+            form = DadosComplementaresUsuarioForm(request.POST,
+                                                  instance=usuario)
+            if form.is_valid():
+                form.save()
+                return redirect('home')
+        else:
+            form = DadosComplementaresUsuarioForm(instance=usuario,
+                                                  initial={
+                                                      'nacionalidade': 'BR'
+                                                  })
 
-            return redirect('custom_login')
+        context['form'] = form
+        return render(request, template, context)
     else:
-        form = DadosComplementaresUsuarioForm(instance=usuario)
-
-    context['form'] = form
-    return render(request, template, context)
+        return redirect('custom_login')
 
 
 class CustomLoginView(LoginView):
     form_class = CustomLoginForm
+
+
+def carrega_cidades(request):
+    estado = request.GET.get('estado')
+    cidades = Cidade.objects.filter(state=estado).order_by('name')
+
+    return render(
+        request, 'base/ajax/cidade_dropdown_list.html', {'cidades': cidades}
+    )
+
+
+class CadastraTelefone(BSModalCreateView):
+    template_name = 'base/cadastra_telefone.html'
+    form_class = TelefoneForm
+    success_message = 'Telefone cadastrado'
+    success_url = reverse_lazy('complementa_usuario', kwargs={'pk': 6})
+
+    def form_valid(self, form):
+        telefone = form.save(commit=False)
+        usuario_id = self.kwargs['usuario_id']
+        usuario = Usuario.objects.get(usuario_id=usuario_id)
+        telefone.usuario = usuario
+        return super(CadastraTelefone, self).form_valid(form)

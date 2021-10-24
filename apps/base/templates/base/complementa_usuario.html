@@ -10,10 +10,30 @@
         <div class="card align-items-sm-center">
             <div class="row g-2 p-2">
                 {{ object.nome_completo }}
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                </form>
+            </div>
+            <form method="post" id="userForm" data-cidades-url="{% url 'ajax_carrega_cidades' %}">
+            {% csrf_token %}
+            <div class="row g-2 p-2">
+                <div class="col-md-3">
+                    {{ form.rg|as_crispy_field }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.org_emis_rg|as_crispy_field }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.est_emis_rg|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row g-2 p-2">
+                <div class="col-md-3">
+                    {{ form.nacionalidade|as_crispy_field }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.estado_natural|as_crispy_field }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.naturalidade_cidade|as_crispy_field }}
+                </div>
             </div>
             <div class="row g-2 p-2">
                 <div class="col-md-3">
@@ -23,7 +43,48 @@
                     <a href="{% url 'custom_login' %}" class="btn btn-danger">Cancelar</a>
                 </div>
             </div>
+                </form>
+
+         <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content"></div>
+          </div>
         </div>
+            <!-- Button trigger modal -->
+        <button id="telefoneModal" class="btn btn-primary" type="button" name="button">Cadastra Telefone</button>
+
+
+    </div>
 </div>
 
+{% endblock %}
+
+{% block script %}
+ <script src="{% static 'jquery_bootstrap/jquery.bootstrap.modal.forms.min.js' %}"></script>
+ <script>
+    $("#id_estado_natural").change(function () {
+      var url = $("#userForm").attr("data-cidades-url");
+      var estado = $(this).val();
+
+      $.ajax({
+        url: url,
+        data: {
+          'estado': estado
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $("#id_naturalidade_cidade").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+      });
+
+    });
+  </script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+        var url = "{% url 'cadastra_telefone' object.usuario.id %}";
+        $("#telefoneModal").modalForm({
+            formURL: url
+        });
+
+    });
+    </script>
 {% endblock %}
