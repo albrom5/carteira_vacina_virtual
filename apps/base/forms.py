@@ -114,7 +114,7 @@ class DadosComplementaresUsuarioForm(forms.ModelForm):
                     state=estado).order_by('name')
             except (ValueError, TypeError):
                 pass
-        elif self.instance.pk:
+        elif self.instance.naturalidade_cidade:
             estado = self.instance.naturalidade_cidade.state
             self.fields['estado_natural'].initial = estado
             self.fields[
