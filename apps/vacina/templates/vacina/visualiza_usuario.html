@@ -1,0 +1,91 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dados do Paciente: {{ paciente.nome_completo }}{% endblock title%}
+
+{% block main %}
+
+
+<div class="row g-2 p-2">
+    <h3>Dados do paciente</h3>
+</div>
+
+<div class="d-flex g-2 p-2">
+
+    <div class="col-md">
+        <strong>Nome:</strong> {{ paciente.nome_completo }}
+    </div>
+
+    <div class="col-md">
+        <strong>Data de nascimento:</strong> {{ paciente.data_nasc|date:"SHORT_DATE_FORMAT" }}
+    </div>
+
+    <div class="col-md">
+        <strong>CPF:</strong> {{ paciente.cpf }}
+    </div>
+</div>
+<hr/>
+<h4>Histórico de vacinação</h4>
+    <table class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Vacina</th>
+            <th>Data de aplicação</th>
+            <th>Local</th>
+            <th>Aplicador</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for aplicacao in paciente.aplicacoes.all %}
+        <tr>
+            <td>{{ aplicacao.dose }}</td>
+            <td>{{ aplicacao.data_aplicacao|date:"SHORT_DATE_FORMAT" }}</td>
+            <td>{{ aplicacao.local }}</td>
+            <td>{{ aplicacao.aplicador }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    <div class="col-md">
+        <button id="registra_aplicacao" class="btn btn-primary" type="button" name="button">Registra aplicação de vacina</button>
+    </div>
+    <div class="col-md">
+        <div class="modal fade" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" id="modal">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content"></div>
+          </div>
+        </div>
+
+    </div>
+
+{% endblock main %}
+
+{% block script %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{% static 'customjs/fieldmasks.js' %}"></script>
+    <script src="{% static 'jquery_bootstrap/jquery.bootstrap.modal.forms.js' %}"></script>
+    <script type="text/javascript">
+     $(function () {
+
+        function registraAplicacaoModalForm() {
+            $("#registra_aplicacao").modalForm({
+                formURL: "{% url 'registra_aplicacao' paciente.usuario_id %}",
+                modalID: "#modal",
+                asyncUpdate: false,
+                asyncSettings: {
+                  closeOnSubmit: true,
+                  successMessage: " ",
+
+                  addModalFormFunction: reinstantiateModalForms
+                }
+            });
+          }
+          registraAplicacaoModalForm();
+
+        function reinstantiateModalForms() {
+            registraAplicacaoModalForm();
+          }
+     })
+    </script>
+{% endblock script %}

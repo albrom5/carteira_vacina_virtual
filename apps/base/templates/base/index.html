@@ -21,7 +21,7 @@
               <tbody>
               {% for aplicacao in aplicacoes %}
                 <tr>
-                  <td class="text-center">{{ aplicacao.vacina }}</td>
+                  <td class="text-center">{{ aplicacao.dose }}</td>
                   <td class="text-center">{{ aplicacao.data_aplicacao|date:"SHORT_DATE_FORMAT" }}</td>
                   <td class="text-center">{{ aplicacao.local }}</td>
                   <td class="text-center">{{ aplicacao.aplicador }}</td>

@@ -8,8 +8,14 @@ from apps.base.models import BaseModel, Cidade
 
 
 class Usuario(BaseModel):
+    TIPOS_USUARIOS = (
+        ('ADM', 'Administrador'),
+        ('PRF', 'Profissional da Saúde'),
+        ('CID', 'Cidadão')
+    )
     usuario = models.OneToOneField(User, primary_key=True,
                                    on_delete=models.PROTECT)
+    tipo = models.CharField(max_length=3, choices=TIPOS_USUARIOS)
     data_nasc = models.DateField(verbose_name='Data de nascimento')
     cpf = BRCPFField(verbose_name='CPF')
     rg = models.CharField(verbose_name='RG', max_length=30, null=True,

@@ -1,0 +1,29 @@
+{% load static %}
+<!-- Modal -->
+        <form method="post" action="">
+          {% csrf_token %}
+
+         <div class="modal-header">
+            <h5 class="modal-title">Registrar aplicação de vacina</h5>
+
+          </div>
+
+          <div class="modal-body">
+            {% for field in form %}
+              <div class="form-group{% if field.errors %} invalid{% endif %}">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% for error in field.errors %}
+                  <p class="help-block">{{ error }}</p>
+                {% endfor %}
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Confirmar</button>
+          </div>
+
+        </form>
+<script>$('.datemask').mask('00/00/0000');</script>
