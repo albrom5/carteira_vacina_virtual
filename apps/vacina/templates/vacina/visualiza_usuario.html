@@ -31,6 +31,8 @@
     <thead>
         <tr>
             <th>Vacina</th>
+            <th>Dose</th>
+            <th>Lote</th>
             <th>Data de aplicação</th>
             <th>Local</th>
             <th>Aplicador</th>
@@ -39,7 +41,9 @@
     <tbody>
         {% for aplicacao in paciente.aplicacoes.all %}
         <tr>
+            <td>{{ aplicacao.vacina }}</td>
             <td>{{ aplicacao.dose }}</td>
+            <td>{{ aplicacao.lote }}</td>
             <td>{{ aplicacao.data_aplicacao|date:"SHORT_DATE_FORMAT" }}</td>
             <td>{{ aplicacao.local }}</td>
             <td>{{ aplicacao.aplicador }}</td>
@@ -47,6 +51,7 @@
         {% endfor %}
     </tbody>
     </table>
+    {% if user.usuario.tipo == 'PRF'%}
     <div class="col-md">
         <button id="registra_aplicacao" class="btn btn-primary" type="button" name="button">Registra aplicação de vacina</button>
     </div>
@@ -58,6 +63,7 @@
         </div>
 
     </div>
+    {% endif %}
 
 {% endblock main %}
 

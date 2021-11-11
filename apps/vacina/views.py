@@ -1,11 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from bootstrap_modal_forms.generic import BSModalCreateView
 from django.urls import reverse_lazy
 
+from apps.base.views import identifica_tipo_usuario_logado
 from apps.base.models import Usuario
 from .forms import RegistraAplicacaoForm
 
+
 def busca_paciente(request):
+
+    if identifica_tipo_usuario_logado(request) not in ['PRF', 'ADM']:
+        return redirect('home')
+
     filtro_cpf = request.GET.get('cpf')
     context = {}
     if filtro_cpf:
@@ -22,6 +28,9 @@ def busca_paciente(request):
 
 
 def visualiza_paciente(request, paciente_id):
+
+    if identifica_tipo_usuario_logado(request) not in ['PRF', 'ADM']:
+        return redirect('home')
 
     paciente = Usuario.objects.get(usuario_id=paciente_id)
 

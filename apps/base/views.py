@@ -18,6 +18,13 @@ from .forms import (
 from apps.vacina.models import Aplicacao
 
 
+def identifica_tipo_usuario_logado(request):
+    try:
+        usuario = Usuario.objects.get(usuario_id=request.user.id)
+    except Usuario.DoesNotExist:
+        return redirect('custom_login')
+    return usuario.tipo
+
 def home(request):
     context = {}
     if request.user.is_authenticated:
@@ -45,9 +52,10 @@ def cadastra_usuario(request):
             cpf = form.cleaned_data.get('cpf')
             usuario.usuario = User.objects.create_user(
                 username=cpf, email=email, password=senha,
-                first_name=primeiro_nome, last_name=sobrenome
+                first_name=primeiro_nome, last_name=sobrenome,
             )
-            form.save()
+            usuario.tipo = 'CID'
+            usuario.save()
             id_usuario = User.objects.get(username=cpf)
             new_user = authenticate(username=form.cleaned_data['cpf'],
                                     password=form.cleaned_data['password2'],
@@ -63,9 +71,11 @@ def cadastra_usuario(request):
 def dados_complementares_usuario(request, pk):
     context = {}
     template = 'base/complementa_usuario.html'
+    if not request.user.is_authenticated:
+        return redirect('custom_login')
     usuario = Usuario.objects.get(usuario_id=pk)
     context['object'] = usuario
-    if request.user.is_authenticated and request.user.id == pk:
+    if request.user.id == pk:
         if request.method == 'POST':
             form = DadosComplementaresUsuarioForm(request.POST,
                                                   instance=usuario)

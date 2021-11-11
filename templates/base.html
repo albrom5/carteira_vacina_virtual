@@ -11,7 +11,7 @@
     {% block extrastyle %} {% endblock %}
     <title>Carteira de Vacinação Virtual {% block title %} {% endblock %}</title>
 </head>
-<body class="bg-light">
+<body style="background-color:{% if user.usuario.tipo == 'PRF' %}#cfffe0{% elif user.usuario.tipo == 'ADM' %}#ffe278{% else %}#e8edea{% endif %}">
         <div class="row g-2 p-2">
           <div class="col-lg-2 themed-grid-col">
              {% include 'sidebar.html' %}

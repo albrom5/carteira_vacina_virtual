@@ -13,6 +13,8 @@
               <thead>
               <tr>
                 <th class="text-center" scope="col">Vacina</th>
+                <th class="text-center" scope="col">Dose</th>
+                <th class="text-center" scope="col">Lote</th>
                 <th class="text-center" scope="col">Data de aplicação</th>
                 <th class="text-center" scope="col">Local</th>
                 <th class="text-center" scope="col">Aplicador</th>
@@ -21,7 +23,9 @@
               <tbody>
               {% for aplicacao in aplicacoes %}
                 <tr>
+                  <td class="text-center">{{ aplicacao.vacina }}</td>
                   <td class="text-center">{{ aplicacao.dose }}</td>
+                  <td class="text-center">{{ aplicacao.lote }}</td>
                   <td class="text-center">{{ aplicacao.data_aplicacao|date:"SHORT_DATE_FORMAT" }}</td>
                   <td class="text-center">{{ aplicacao.local }}</td>
                   <td class="text-center">{{ aplicacao.aplicador }}</td>
