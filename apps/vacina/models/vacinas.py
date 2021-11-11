@@ -24,7 +24,7 @@ class Vacina(BaseModel):
     doenca = models.ManyToManyField(Doenca)
     idade_minima_aplicacao = models.PositiveIntegerField()
     idade_maxima_aplicacao = models.PositiveIntegerField()
-    qtd_doses = models.PositiveSmallIntegerField
+    qtd_doses = models.PositiveSmallIntegerField()
     fabricante = models.ForeignKey(FabricanteVacina,
                                    on_delete=models.SET_NULL,
                                    null=True, blank=True)
