@@ -14,3 +14,7 @@ input[type=number] {
 .select2-selection__rendered {
   margin: -6px;
 }
+
+body, html {
+font-family: 'Poppins', sans-serif!important;
+}
