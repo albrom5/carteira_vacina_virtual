@@ -1,0 +1,1 @@
+from .views import busca_paciente, visualiza_paciente, RegistraAplicacao

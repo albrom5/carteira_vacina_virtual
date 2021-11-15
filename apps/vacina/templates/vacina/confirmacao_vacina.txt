@@ -1,0 +1,4 @@
+Sr(a). {{ paciente }}!
+
+Informamos que foi registrada em sua Carteira Digital de Vacinação, a aplicação da vacina {{ aplicacao.vacina }} no dia {{ aplicacao.data_aplicacao|date:"SHORT_DATE_FORMAT" }} em {{ aplicacao.local }}.
+

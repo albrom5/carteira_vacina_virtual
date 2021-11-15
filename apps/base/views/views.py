@@ -1,4 +1,3 @@
-from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 from django.contrib.auth import authenticate, login
@@ -6,31 +5,27 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
-from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 
-
-from .models import Usuario, Cidade, Telefone, Endereco
-from .forms import (
+from apps.base.models import Usuario, Telefone, Endereco
+from apps.base.forms import (
     NovoUsuarioForm, CustomLoginForm, DadosComplementaresUsuarioForm,
     TelefoneForm, EnderecoForm
 )
 from apps.vacina.models import Aplicacao
+from apps.vacina.functions import verifica_vacinas
 
-
-def identifica_tipo_usuario_logado(request):
-    try:
-        usuario = Usuario.objects.get(usuario_id=request.user.id)
-    except Usuario.DoesNotExist:
-        return redirect('custom_login')
-    return usuario.tipo
 
 def home(request):
-    context = {}
+
     if request.user.is_authenticated:
-        context['usuario'] = request.user
+
         aplicacoes = Aplicacao.objects.filter(usuario=request.user.id)
-        context['aplicacoes'] = aplicacoes
+
+        elegiveis = verifica_vacinas(request.user.id)
+        context = {'usuario': request.user,
+                   'aplicacoes': aplicacoes,
+                   'elegiveis': elegiveis}
 
         return render(request, 'base/index.html', context)
     else:
@@ -68,6 +63,7 @@ def cadastra_usuario(request):
     context['form'] = form
     return render(request, template, context)
 
+
 def dados_complementares_usuario(request, pk):
     context = {}
     template = 'base/complementa_usuario.html'
@@ -101,15 +97,6 @@ class CustomLoginView(LoginView):
     form_class = CustomLoginForm
 
 
-def carrega_cidades(request):
-    estado = request.GET.get('estado')
-    cidades = Cidade.objects.filter(state=estado).order_by('name')
-
-    return render(
-        request, 'base/ajax/cidade_dropdown_list.html', {'cidades': cidades}
-    )
-
-
 class CadastraTelefone(BSModalCreateView):
     template_name = 'base/cadastra_telefone.html'
     form_class = TelefoneForm
@@ -137,20 +124,6 @@ class TelefoneDeleteView(BSModalDeleteView):
         return reverse_lazy('complementa_usuario', kwargs={'pk': usuario_id})
 
 
-def lista_telefones(request, usuario_id):
-    data = dict()
-
-    if request.method == 'GET':
-        telefones_usuario = Telefone.objects.filter(usuario_id=usuario_id)
-        # asyncSettings.dataKey = 'table'
-        data['table'] = render_to_string(
-            'base/_telefones_table.html',
-            {'telefones': telefones_usuario},
-            request=request
-        )
-        return JsonResponse(data)
-
-
 class CadastraEndereco(BSModalCreateView):
     template_name = 'base/cadastra_endereco.html'
     form_class = EnderecoForm
@@ -176,17 +149,3 @@ class EnderecoDeleteView(BSModalDeleteView):
     def get_success_url(self):
         usuario_id = self.object.usuario.usuario_id
         return reverse_lazy('complementa_usuario', kwargs={'pk': usuario_id})
-
-
-def lista_enderecos(request, usuario_id):
-    data = dict()
-
-    if request.method == 'GET':
-        enderecos_usuario = Endereco.objects.filter(usuario_id=usuario_id)
-        # asyncSettings.dataKey = 'table'
-        data['table'] = render_to_string(
-            'base/_enderecos_table.html',
-            {'enderecos': enderecos_usuario},
-            request=request
-        )
-        return JsonResponse(data)

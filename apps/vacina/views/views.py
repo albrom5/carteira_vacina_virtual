@@ -1,15 +1,18 @@
+from django.conf import settings
 from django.shortcuts import render, redirect
 from bootstrap_modal_forms.generic import BSModalCreateView
 from django.urls import reverse_lazy
+from django.contrib.auth.models import User
 
-from apps.base.views import identifica_tipo_usuario_logado
+from apps.base.functions import identifica_tipo_usuario_logado
 from apps.base.models import Usuario
-from .forms import RegistraAplicacaoForm
+from apps.vacina.forms import RegistraAplicacaoForm
+from apps.vacina.functions import _send_mail
 
 
 def busca_paciente(request):
 
-    if identifica_tipo_usuario_logado(request) not in ['PRF', 'ADM']:
+    if identifica_tipo_usuario_logado(request.user.id) not in ['PRF', 'ADM']:
         return redirect('home')
 
     filtro_cpf = request.GET.get('cpf')
@@ -29,7 +32,7 @@ def busca_paciente(request):
 
 def visualiza_paciente(request, paciente_id):
 
-    if identifica_tipo_usuario_logado(request) not in ['PRF', 'ADM']:
+    if identifica_tipo_usuario_logado(request.user.id) not in ['PRF', 'ADM']:
         return redirect('home')
 
     paciente = Usuario.objects.get(usuario_id=paciente_id)
@@ -49,8 +52,19 @@ class RegistraAplicacao(BSModalCreateView):
         usuario_logado = Usuario.objects.get(usuario=self.request.user.id)
         aplicacao.usuario = Usuario.objects.get(usuario_id=paciente_id)
         aplicacao.aplicador = usuario_logado
+        dest_email = User.objects.get(id=paciente_id)
+        context_email = {'aplicacao': form.cleaned_data,
+                         'paciente': dest_email.usuario.nome_completo}
+        if not self.request.is_ajax():
+            # Modal View valida o form 2 vezes, a primeira é Ajax
+            _send_mail('Confirmação de inscrição',
+                       settings.DEFAULT_FROM_EMAIL,
+                       dest_email.email,
+                       'vacina/confirmacao_vacina.txt',
+                       context_email)
         return super(RegistraAplicacao, self).form_valid(form)
 
     def get_success_url(self):
         paciente_id = self.kwargs['paciente_id']
-        return reverse_lazy('visualiza_paciente', kwargs={'paciente_id': paciente_id})
+        return reverse_lazy('visualiza_paciente',
+                            kwargs={'paciente_id': paciente_id})

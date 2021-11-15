@@ -20,6 +20,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
+DEFAULT_FROM_EMAIL = 'naoresponda@carteiradigitalvacinacao.com.br'
 
 # Application definition
 
@@ -31,6 +32,7 @@ INSTALLED_APPS = [
     'localflavor',
     'django_countries',
     'bootstrap_modal_forms',
+    'django_extensions',
     # Padrão do Django
     'django.contrib.admin',
     'django.contrib.auth',
@@ -145,3 +147,11 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Activate Django-Heroku.git
 django_heroku.settings(locals())
+
+# Email settings
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')

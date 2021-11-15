@@ -12,11 +12,11 @@
     <title>Carteira de Vacinação Virtual {% block title %} {% endblock %}</title>
 </head>
 <body style="background-color:{% if user.usuario.tipo == 'PRF' %}#cfffe0{% elif user.usuario.tipo == 'ADM' %}#ffe278{% else %}#e8edea{% endif %}">
-        <div class="row g-2 p-2">
-          <div class="col-lg-2 themed-grid-col">
+        <div class="d-flex flexible-row g-2 p-2">
+          <div class="col-2 themed-grid-col">
              {% include 'sidebar.html' %}
           </div>
-          <div class="col-lg-10 themed-grid-col">
+          <div class="col-10 themed-grid-col">
                 <div class="card py-3 px-3">
                  {% block main %} {% endblock %}
                 </div>

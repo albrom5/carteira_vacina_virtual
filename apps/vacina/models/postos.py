@@ -24,6 +24,9 @@ class Posto(BaseModel):
     def __str__(self):
         return self.nome
 
+    class Meta:
+        ordering = ['nome']
+
 
 class TelefonePosto(BaseModel):
     posto = models.ForeignKey(Posto, on_delete=models.CASCADE)
@@ -49,3 +52,15 @@ class TelefonePosto(BaseModel):
 
     def __str__(self):
         return self.numero
+
+
+class CoordenadasPosto(BaseModel):
+    posto = models.ForeignKey(Posto, on_delete=models.CASCADE)
+    latitude = models.DecimalField(max_digits=22, decimal_places=16,
+                                   blank=True, null=True)
+    longitude = models.DecimalField(max_digits=22, decimal_places=16,
+                                   blank=True, null=True)
+
+    def __str__(self):
+        return self.posto
+
