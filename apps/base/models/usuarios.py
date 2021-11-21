@@ -7,7 +7,8 @@ from localflavor.br.models import BRStateField, BRCPFField
 from django_countries.fields import CountryField
 from dateutil.relativedelta import relativedelta
 
-from apps.base.models import BaseModel, Cidade
+from apps.core.models import BaseModel
+from apps.base.models import Cidade
 
 
 def tornar_anteriores_falsos(instance):
@@ -59,6 +60,9 @@ class Usuario(BaseModel):
     naturalidade_estado = BRStateField(null=True, blank=True)
     is_gestante = models.BooleanField(default=False)
     data_inicio_gestacao = models.DateField(null=True, blank=True)
+    posto = models.ForeignKey('vacina.Posto', on_delete=models.SET_NULL,
+                              null=True, blank=True)
+    aceita_email = models.BooleanField(default=False)
 
     @property
     def nome_completo(self):

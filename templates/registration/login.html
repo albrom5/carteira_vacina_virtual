@@ -3,18 +3,18 @@
 {% load crispy_forms_tags %}
 {% block title %}Carteira de Vacinação Virtual - Login{% endblock %}
 {% block main %}
-    <div class="container-sm p-2">
-                <div class="card align-items-sm-center">
-                  <form method="post">
+    <div class="container-sm p-2 h-100 row align-items-center m-auto w-50">
+                <div class="card border-primary align-items-center p-5">
+                  <form method="post" class="w-33">
                    {% csrf_token %}
-                    <img class="mb-4" src="{% static 'img/univesp.png' %}" alt="" width="200" height="200">
+                    <img class="mb-4 row m-auto" src="{% static 'img/univesp.png' %}" alt="" width="240" height="141">
                       <div class="row p-2 g-2">
-                       <div class="col-md">
+                       <div class="col-md fw-bold">
                           {{form.username|as_crispy_field }}
                        </div>
                       </div>
                       <div class="row p-2 g-2">
-                       <div class="col-md">
+                       <div class="col-md fw-bold">
                           {{form.password|as_crispy_field }}
                        </div>
                       </div>
@@ -27,12 +27,9 @@
                       </div>
                       <div class="row p-2 g-2">
                        <div class="col-md">
-                        <button class="btn btn-primary" type="submit">Login</button>
-                       </div>
-                      </div>
-                      <div class="row p-2 g-2">
-                       <div class="col-md">
-                        <a href="{% url 'novo_usuario' %}" class="btn btn-outline-primary">Cadastre-se</a>
+                        <button class="btn btn-primary btn-lg" type="submit">Login</button>
+                           <a href="{% url 'novo_usuario' %}" class="btn btn-outline-primary btn-lg">Cadastre-se</a>
+
                        </div>
                       </div>
 

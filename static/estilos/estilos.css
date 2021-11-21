@@ -1,3 +1,4 @@
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -13,4 +14,8 @@ input[type=number] {
 
 .select2-selection__rendered {
   margin: -6px;
+}
+
+body, html {
+font-family: 'Poppins', sans-serif!important;
 }

@@ -1,3 +1,5 @@
+import datetime
+
 from django.conf import settings
 from django.shortcuts import render, redirect
 from bootstrap_modal_forms.generic import BSModalCreateView
@@ -46,6 +48,14 @@ class RegistraAplicacao(BSModalCreateView):
     success_message = 'Aplicação registrada com sucesso!'
     form_class = RegistraAplicacaoForm
 
+    def get(self, request, *args, **kwargs):
+        usuario = Usuario.objects.get(usuario_id=request.user.id)
+        form = self.form_class(initial={
+            'local': usuario.posto,
+            'data_aplicacao': datetime.date.today()
+        })
+        return render(request, self.template_name, {'form': form})
+
     def form_valid(self, form):
         aplicacao = form.save(commit=False)
         paciente_id = self.kwargs['paciente_id']
@@ -57,7 +67,7 @@ class RegistraAplicacao(BSModalCreateView):
                          'paciente': dest_email.usuario.nome_completo}
         if not self.request.is_ajax():
             # Modal View valida o form 2 vezes, a primeira é Ajax
-            _send_mail('Confirmação de inscrição',
+            _send_mail('Novo registro de vacinação',
                        settings.DEFAULT_FROM_EMAIL,
                        dest_email.email,
                        'vacina/confirmacao_vacina.txt',

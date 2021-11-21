@@ -92,7 +92,10 @@ class DadosComplementaresUsuarioForm(forms.ModelForm):
     estado_natural = forms.ChoiceField(choices=siglas,
                                        label='Naturalidade', required=False)
     est_emis_rg = forms.ChoiceField(choices=siglas,
-                                       label='Estado emissor do RG', required=False)
+                                       label='Estado emissor do RG',
+                                    required=False)
+    aceita_email = forms.BooleanField(label='Aceita receber emails?',
+                                      required=False)
     def __init__(self, *args, **kwargs):
         super(DadosComplementaresUsuarioForm, self).__init__(*args, **kwargs)
         self.fields['naturalidade_cidade'].queryset = Cidade.objects.none()
@@ -104,6 +107,12 @@ class DadosComplementaresUsuarioForm(forms.ModelForm):
         )
         self.fields['est_emis_rg'].widget.attrs.update(
             {'class': 'form-select'}
+        )
+        self.fields['sexo'].widget.attrs.update(
+            {'class': 'form-select'}
+        )
+        self.fields['aceita_email'].widget.attrs.update(
+            {'class': 'form-check-input'}
         )
 
         if 'estado_natural' in self.data:
@@ -124,7 +133,7 @@ class DadosComplementaresUsuarioForm(forms.ModelForm):
     class Meta:
         model = Usuario
         fields = ['rg', 'org_emis_rg', 'est_emis_rg', 'nacionalidade',
-                  'naturalidade_cidade']
+                  'naturalidade_cidade', 'sexo', 'aceita_email']
 
 
 class CustomLoginForm(AuthenticationForm):

@@ -5,7 +5,7 @@
           <svg class="bi me-2" width="30" height="24"></svg>
           <span class="fs-5 fw-semibold">Carteira de Vacinação Virtual</span>
         </a>
-        <p class="fs-5 fw-semibold ps-3 pt-3">{{ user.usuario.get_tipo_display }}</p>
+        <p class="fw-semibold ps-3 pt-3">Perfil: {{ user.usuario.get_tipo_display }}</p>
         <ul class="list-unstyled ps-3 pt-3">
           <li class="mb-1">
             <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#vacina-collapse" aria-expanded="false">
@@ -13,7 +13,9 @@
             </button>
             <div class="collapse" id="vacina-collapse">
               <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-               {% if user.usuario.tipo == 'PRF' or user.usuario.tipo == 'ADM' %}
+                <li><a href="{% url 'historico_vacinacao' %}" class="link-dark rounded">Histórico de vacinação</a></li>
+                <li><a href="{% url 'home' %}" class="link-dark rounded">Vacinas pendentes</a></li>
+                  {% if user.usuario.tipo == 'PRF' or user.usuario.tipo == 'ADM' %}
                 <li><a href="{% url 'busca_paciente' %}" class="link-dark rounded">Busca paciente</a></li>
                 {% endif %}
               </ul>

@@ -1,0 +1,7 @@
+Sr(a). {{ paciente }}
+
+Conforme o Calendário Nacional de Vacinação, procure o posto de saúde mais próximo para aplicação das vacinas pendentes, conforme relação abaixo.
+
+{% for vacina in vacinas %}
+    {{ vacina.vacina }}
+{% endfor %}

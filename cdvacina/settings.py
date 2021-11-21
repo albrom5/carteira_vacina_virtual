@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django_countries',
     'bootstrap_modal_forms',
     'django_extensions',
+    'django_apscheduler',
     # Padrão do Django
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Projeto
     'apps.base',
+    'apps.core',
     'apps.vacina',
 ]
 

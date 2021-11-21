@@ -10,9 +10,6 @@ class RegistraAplicacaoForm(BSModalModelForm):
         self.fields['data_aplicacao'].widget.attrs.update(
             {'class': 'form-control datemask'}
         )
-        self.fields['dose'].widget.attrs.update(
-            {'class': 'form-control'}
-        )
         self.fields['lote'].widget.attrs.update(
             {'class': 'form-control'}
         )
@@ -25,5 +22,5 @@ class RegistraAplicacaoForm(BSModalModelForm):
 
     class Meta:
         model = Aplicacao
-        fields = ['vacina', 'dose', 'lote', 'local', 'data_aplicacao']
+        fields = ['vacina', 'lote', 'local', 'data_aplicacao']
 

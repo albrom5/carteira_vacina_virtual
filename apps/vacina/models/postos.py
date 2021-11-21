@@ -2,7 +2,7 @@ from django.db import models
 
 from localflavor.br.models import BRStateField
 
-from apps.base.models import BaseModel
+from apps.core.models import BaseModel
 
 
 class Posto(BaseModel):

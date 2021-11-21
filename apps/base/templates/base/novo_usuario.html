@@ -6,44 +6,42 @@
 {% endblock %}
 
 {% block main %}
-    <div class="container-sm p-2">
-        <div class="card align-items-sm-center">
-            <div class="row g-2 p-2">
-                <h3>Cadastro de usuário</h3>
+    <div class="container-sm h-100 row align-items-center m-auto">
+        <div class="card align-items-sm-center p-5 border-primary w-75 m-auto">
+            <div class="row g-3 pb-5">
+                <h1 class="fw-bold">Cadastro de Usuário</h1>
             </div>
             <form method="post">
                 {% csrf_token %}
-                <div class="row g-2 p-2">
-                    <div class="col-md-3">
+                <div class="row g-3 p-2">
+                    <div class="col-6 fw-bold">
                         {{ form.primeiro_nome|as_crispy_field }}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-6 fw-bold">
                         {{ form.sobrenome|as_crispy_field }}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-3 fw-bold">
                         {{ form.data_nasc|as_crispy_field }}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-3 fw-bold">
                         {{ form.cpf|as_crispy_field }}
                     </div>
-                </div>
-                <div class="row g-2 p-2">
-                    <div class="col-md-3">
+                    <div class="col-6 fw-bold">
                         {{ form.email|as_crispy_field }}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-6 fw-bold">
                         {{ form.password1|as_crispy_field }}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-6 fw-bold">
                         {{ form.password2|as_crispy_field }}
                     </div>
                 </div>
-                <div class="row g-2 p-2">
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-success">Confirmar</button>
+                <div class="row g-3 p-2">
+                    <div class="col-3">
+                        <button type="submit" class="btn btn-large btn-success w-100">Confirmar</button>
                     </div>
-                    <div class="col-md-3">
-                        <a href="{% url 'custom_login' %}" class="btn btn-danger">Cancelar</a>
+                    <div class="col-3">
+                        <a href="{% url 'custom_login' %}" class="btn btn-large btn-danger w-100">Cancelar</a>
                     </div>
                 </div>
             </form>

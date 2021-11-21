@@ -3,7 +3,7 @@ from django.urls import path
 from .views import (
     home, cadastra_usuario, CustomLoginView, dados_complementares_usuario,
     carrega_cidades, CadastraTelefone, lista_telefones, TelefoneDeleteView,
-    CadastraEndereco, lista_enderecos, EnderecoDeleteView
+    CadastraEndereco, lista_enderecos, EnderecoDeleteView, historico_vacinacao
 )
 
 
@@ -12,6 +12,7 @@ urlpatterns = [
     path('usuario/novo/', cadastra_usuario, name='novo_usuario'),
     path('dados_adicionais/<int:pk>', dados_complementares_usuario,
          name='complementa_usuario'),
+    path('historico/', historico_vacinacao, name='historico_vacinacao'),
     path('login/', CustomLoginView.as_view(), name='custom_login'),
     path('<int:usuario_id>/cadastra_telefone/', CadastraTelefone.as_view(),
          name='cadastra_telefone'),

@@ -6,12 +6,12 @@
 {% endblock %}
 
 {% block main %}
-<div class="container-sm p-2">
-        <div class="card align-items-sm-center">
-            <div class="row g-2 p-2">
-                <h3>Dados pessoais do usuário</h3>
+<div class="container-sm p-2 h-100 row align-items-center m-auto">
+        <div class="card align-items-sm-center w-75 border-primary p-4 m-auto">
+            <div class="row g-3 p-2">
+                <h1 class="fw-bold pb-5">Dados pessoais do usuário</h1>
             </div>
-            <div class="row g-2 p-2">
+            <div class="row g-3 pb-5">
                 <div class="col-md">
                 <strong>Nome:</strong> {{ object.nome_completo }}
                 </div>
@@ -27,45 +27,49 @@
             </div>
             <form method="post" id="userForm" data-cidades-url="{% url 'ajax_carrega_cidades' %}">
             {% csrf_token %}
-            <div class="row g-2 p-2">
-                <div class="col-md-3">
+            <div class="row g-3 p-2">
+                <div class="col-6 fw-bold">
                     {{ form.rg|as_crispy_field }}
                 </div>
-                <div class="col-md-3">
+                <div class="col-6 fw-bold">
                     {{ form.org_emis_rg|as_crispy_field }}
                 </div>
-                <div class="col-md-3">
+                <div class="col-6 fw-bold">
                     {{ form.est_emis_rg|as_crispy_field }}
                 </div>
-            </div>
-            <div class="row g-2 p-2">
-                <div class="col-md-3">
+                <div class="col-6 fw-bold">
                     {{ form.nacionalidade|as_crispy_field }}
                 </div>
-                <div class="col-md-3">
+                <div class="col-6 fw-bold">
                     {{ form.estado_natural|as_crispy_field }}
                 </div>
-                <div class="col-md-3">
+                <div class="col-6 fw-bold">
                     {{ form.naturalidade_cidade|as_crispy_field }}
+                </div>
+                <div class="col-6 fw-bold">
+                    {{ form.sexo|as_crispy_field }}
+                </div>
+                <div class="col-6 fw-bold">
+                    {{ form.aceita_email|as_crispy_field }}
                 </div>
             </div>
             <div class="row g-2 p-2">
-                <div class="col-md-3">
-                    <button type="submit" class="btn btn-success">Confirmar</button>
+                <div class="col-3">
+                    <button type="submit" class="btn btn-large btn-success w-100">Confirmar</button>
                 </div>
-                <div class="col-md-3">
-                    <a href="{% url 'custom_login' %}" class="btn btn-danger">Cancelar</a>
+                <div class="col-3">
+                    <a href="{% url 'custom_login' %}" class="btn btn-large btn-danger w-100">Cancelar</a>
                 </div>
             </div>
                 </form>
-        <div class="row">
-            <div class="col-md">
+        <div class="row pt-5 w-100">
+            <div class="col-6">
                 {% include "base/_telefones_table.html" %}
-                <button id="create-telefone-async" class="btn btn-primary" type="button" name="button">Cadastra Telefone</button>
+                <button id="create-telefone-async" class="btn btn-large btn-primary" type="button" name="button">Cadastrar Telefone</button>
             </div>
-            <div class="col-md">
+            <div class="col-6">
                 {% include "base/_enderecos_table.html" %}
-                <button id="create-endereco-async" class="btn btn-primary" type="button" name="button">Cadastra Endereço</button>
+                <button id="create-endereco-async" class="btn btn-large btn-primary" type="button" name="button">Cadastrar Endereço</button>
             </div>
         </div>
         <div class="row g-2 p-2">

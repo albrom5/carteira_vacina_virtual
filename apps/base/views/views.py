@@ -20,14 +20,21 @@ def home(request):
 
     if request.user.is_authenticated:
 
-        aplicacoes = Aplicacao.objects.filter(usuario=request.user.id)
-
         elegiveis = verifica_vacinas(request.user.id)
         context = {'usuario': request.user,
-                   'aplicacoes': aplicacoes,
                    'elegiveis': elegiveis}
 
         return render(request, 'base/index.html', context)
+    else:
+        return redirect('custom_login')
+
+
+def historico_vacinacao(request):
+
+    if request.user.is_authenticated:
+        aplicacoes = Aplicacao.objects.filter(usuario=request.user.id)
+        return render(request, 'base/historico_vacinacao.html',
+                      {'aplicacoes': aplicacoes})
     else:
         return redirect('custom_login')
 

@@ -1,8 +1,10 @@
 from dateutil.relativedelta import relativedelta
 
 from django.db import models
+from django.db.models import F
 
-from apps.base.models import BaseModel, Usuario
+from apps.core.models import BaseModel
+from apps.base.models import Usuario
 
 from .postos import Posto
 
@@ -32,22 +34,80 @@ class FabricanteVacina(BaseModel):
 
 
 class Vacina(BaseModel):
+    SEXO = (
+        ('F', 'Feminino'),
+        ('M', 'Masculino')
+    )
     nome = models.CharField(max_length=50)
     doenca = models.ManyToManyField(Doenca)
-    idade_minima_aplicacao = models.PositiveIntegerField()
-    idade_maxima_aplicacao = models.PositiveIntegerField(null=True, blank=True)
+    idade_minima_aplicacao = models.PositiveIntegerField(
+        verbose_name='Idade mínima para aplicação (meses)'
+    )
+    idade_maxima_aplicacao = models.PositiveIntegerField(
+        null=True, blank=True,
+        verbose_name='Idade máxima para aplicação (meses)'
+    )
     qtd_doses = models.PositiveSmallIntegerField()
-    intervalo_doses = models.PositiveSmallIntegerField(null=True, blank=True)
-    is_anual = models.BooleanField(default=False)
+    intervalo_doses = models.PositiveSmallIntegerField(
+        null=True, blank=True,
+        verbose_name='Intervalo entre as doses (dias)'
+    )
+    is_anual = models.BooleanField(default=False, verbose_name='Dose anual?')
+    para_gestante = models.BooleanField(
+        default=False, verbose_name='Gestante pode tomar?'
+    )
+    gestante_especifica = models.BooleanField(
+        default=False, verbose_name='Específica para gestante'
+    )
+    sexo = models.CharField(max_length=1, choices=SEXO, blank=True)
     fabricante = models.ForeignKey(FabricanteVacina,
                                    on_delete=models.SET_NULL,
                                    null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        if not self.idade_maxima_aplicacao:
+            self.idade_maxima_aplicacao = 9999
+
+        super(Vacina, self).save(*args, **kwargs)
+
     def __str__(self):
-        return f'{self.nome} - {self.fabricante}'
+        return f'{self.nome}'
 
     class Meta:
         ordering = ['nome']
+
+
+class Dose(BaseModel):
+    vacina = models.ForeignKey(Vacina, on_delete=models.CASCADE)
+    ordem = models.PositiveSmallIntegerField(blank=True)
+    proxima_dose = models.PositiveSmallIntegerField(
+        null=True, blank=True,
+        verbose_name='Intervalo para a próxima dose (dias)')
+
+    def get_ordem(self):
+        doses = Dose.objects.filter(vacina=self.vacina).last()
+        if not doses:
+            ordem = 1
+        else:
+            ordem = doses.ordem + 1
+        return ordem
+
+    def save(self, *args, **kwargs):
+        if not self.ordem:
+            self.ordem = self.get_ordem()
+        super(Dose, self).save(*args, **kwargs)
+
+    def delete(self, using=None, keep_parents=False, *args, **kwargs):
+        Dose.objects.filter(
+            vacina=self.vacina, ordem__gt=self.ordem
+        ).update(ordem=F('ordem') - 1)
+        super(Dose, self).delete(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.vacina} - {self.ordem}'
+
+    class Meta:
+        ordering = ['vacina', 'ordem']
 
 
 class Aplicacao(BaseModel):
@@ -74,9 +134,20 @@ class Aplicacao(BaseModel):
             proxima = 'Ciclo completo'
         return proxima
 
+    def save(self, *args, **kwargs):
+        if not self.dose:
+            ultima_dose = Aplicacao.objects.filter(
+                vacina=self.vacina,
+                usuario=self.usuario
+            ).order_by('dose').last()
+            if ultima_dose:
+                self.dose = ultima_dose.dose + 1
+            else:
+                self.dose = 1
+        super(Aplicacao, self).save(*args, **kwargs)
+
     def __str__(self):
-        return f'{self.usuario.nome_completo} - {self.vacina} - ' \
-               f'{self.data_aplicacao}'
+        return f'{self.vacina} - {self.data_aplicacao}'
 
     class Meta:
         verbose_name = 'Aplicação'
