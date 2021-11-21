@@ -64,11 +64,19 @@ class Vacina(BaseModel):
                                    on_delete=models.SET_NULL,
                                    null=True, blank=True)
 
+    def cria_dose(self):
+        doses = Dose.objects.filter(vacina=self)
+        if not doses:
+            Dose.objects.create(vacina=self,
+                                ordem=1,
+                                proxima_dose=self.intervalo_doses)
+
     def save(self, *args, **kwargs):
         if not self.idade_maxima_aplicacao:
             self.idade_maxima_aplicacao = 9999
 
         super(Vacina, self).save(*args, **kwargs)
+        self.cria_dose()
 
     def __str__(self):
         return f'{self.nome}'
