@@ -11,12 +11,12 @@
     {% block extrastyle %} {% endblock %}
     <title>Carteira de Vacinação Virtual {% block title %} {% endblock %}</title>
 </head>
-<body class="bg-light vh-100">
+<body class="bg-light vh-100 p-4">
         <div class="d-flex flexible-row g-2 p-2">
-          <div class="col-2 themed-grid-col">
+          <div class="col-2 themed-grid-col me-2">
              {% include 'sidebar.html' %}
           </div>
-          <div class="col-10 themed-grid-col">
+          <div class="col-10 themed-grid-col ms-4">
                 <div class="card py-3 px-3">
                  {% block main %} {% endblock %}
                 </div>
